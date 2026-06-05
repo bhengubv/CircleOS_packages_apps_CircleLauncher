@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Circle Launcher home layout.
+  Top: privacy status widget (tap -> CircleSettings)
+  Bottom: app grid (4 columns)
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1A1F36"
+    android:fitsSystemWindows="true">
+
+    <!-- Privacy status widget -->
+    <LinearLayout
+        android:id="@+id/privacy_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="#243047"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_widget_title"
+            android:textColor="#7D9B8A"
+            android:textSize="12sp"
+            android:letterSpacing="0.15"
+            android:textAllCaps="true" />
+
+        <TextView
+            android:id="@+id/privacy_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_status_default"
+            android:textColor="#F5F0EB"
+            android:textSize="18sp"
+            android:paddingTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- App grid fills the rest -->
+    <GridView
+        android:id="@+id/app_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="4"
+        android:horizontalSpacing="8dp"
+        android:verticalSpacing="16dp"
+        android:padding="16dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center" />
+
+</LinearLayout>

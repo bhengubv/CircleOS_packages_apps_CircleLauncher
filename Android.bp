@@ -1,0 +1,29 @@
+// Copyright (C) 2026 CircleOS
+// SPDX-License-Identifier: Apache-2.0
+//
+// Minimal Circle home screen launcher.
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+android_app {
+    name: "CircleLauncher",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    manifest: "AndroidManifest.xml",
+    // Privileged so it can ship in /system/priv-app and bind to Circle
+    // SystemServices like circle.privacy without going through the
+    // public app sdk surface.
+    platform_apis: true,
+    certificate: "platform",
+    privileged: true,
+    optimize: {
+        enabled: false,
+    },
+    static_libs: [
+        // Privacy AIDLs for the home-screen widget that surfaces the live
+        // Circle privacy score.
+        "android.circleos-java",
+    ],
+}

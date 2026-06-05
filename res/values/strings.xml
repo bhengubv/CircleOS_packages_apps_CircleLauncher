@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Circle Launcher</string>
+    <string name="privacy_widget_title">Circle Privacy</string>
+    <string name="privacy_status_default">Protected</string>
+    <string name="app_icon_desc">App icon</string>
+</resources>
