@@ -11,7 +11,7 @@
 
     <application
         android:label="Circle Launcher"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_circle_launcher"
         android:theme="@style/Theme.CircleLauncher">
 
         <activity
