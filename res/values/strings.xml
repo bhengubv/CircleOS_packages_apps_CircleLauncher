@@ -3,5 +3,8 @@
     <string name="app_name">Circle Launcher</string>
     <string name="privacy_widget_title">Circle Privacy</string>
     <string name="privacy_status_default">Protected</string>
+    <string name="privacy_shield">Privacy shield</string>
     <string name="app_icon_desc">App icon</string>
+    <string name="search_hint">Search apps</string>
+    <string name="dock_app">Dock app</string>
 </resources>

@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Single app cell — HyperOS style.
+  Rounded superellipse icon (applied in code via clipPath) + label below.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
-    <ImageView
-        android:id="@+id/app_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:contentDescription="@string/app_icon_desc" />
+    <FrameLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp">
+
+        <!-- Icon with rounded mask applied programmatically -->
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/app_icon_desc" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/app_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#F5F0EB"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:maxLines="1"
         android:ellipsize="end"
-        android:paddingTop="4dp" />
+        android:gravity="center_horizontal"
+        android:paddingTop="6dp" />
 
 </LinearLayout>

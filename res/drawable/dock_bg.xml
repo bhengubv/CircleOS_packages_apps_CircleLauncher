@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dock background — subtle frosted bar at bottom. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#001A1F36"
+        android:endColor="#DD1A1F36"
+        android:angle="270" />
+</shape>
