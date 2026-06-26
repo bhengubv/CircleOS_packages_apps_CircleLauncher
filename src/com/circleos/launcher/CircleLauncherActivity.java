@@ -81,6 +81,14 @@ public class CircleLauncherActivity extends Activity {
     private GridView mAppGrid;
     private final ImageView[] mDockIcons = new ImageView[DOCK_SIZE];
     private final ResolveInfo[] mDockApps = new ResolveInfo[DOCK_SIZE];
+    private TextView mClockTime;
+    private TextView mClockDate;
+
+    /** Updates the live clock tile on every minute tick / time change. */
+    private final android.content.BroadcastReceiver mTimeReceiver =
+            new android.content.BroadcastReceiver() {
+        @Override public void onReceive(android.content.Context c, Intent i) { updateClock(); }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,8 @@ public class CircleLauncherActivity extends Activity {
         mPrivacyStatusText = findViewById(R.id.privacy_status_text);
         mPrivacyScoreText  = findViewById(R.id.privacy_score_text);
         mAppGrid           = findViewById(R.id.app_grid);
+        mClockTime = findViewById(R.id.clock_time);
+        mClockDate = findViewById(R.id.clock_date);
 
         mDockIcons[0] = findViewById(R.id.dock_1);
         mDockIcons[1] = findViewById(R.id.dock_2);
@@ -110,6 +120,31 @@ public class CircleLauncherActivity extends Activity {
     protected void onResume() {
         super.onResume();
         refreshPrivacyWidget();
+        updateClock();
+        android.content.IntentFilter tf = new android.content.IntentFilter();
+        tf.addAction(Intent.ACTION_TIME_TICK);
+        tf.addAction(Intent.ACTION_TIME_CHANGED);
+        tf.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        registerReceiver(mTimeReceiver, tf);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try { unregisterReceiver(mTimeReceiver); } catch (Throwable ignored) {}
+    }
+
+    /** Live clock tile - time respects the user's 12/24h setting. */
+    private void updateClock() {
+        java.util.Date now = new java.util.Date();
+        if (mClockTime != null) {
+            mClockTime.setText(
+                    android.text.format.DateFormat.getTimeFormat(this).format(now));
+        }
+        if (mClockDate != null) {
+            mClockDate.setText(new java.text.SimpleDateFormat(
+                    "EEEE, d MMMM", java.util.Locale.getDefault()).format(now));
+        }
     }
 
     // ------------------------------------------------------------------
