@@ -214,10 +214,12 @@ public class CircleLauncherActivity extends Activity {
         main.addCategory(Intent.CATEGORY_LAUNCHER);
         final List<ResolveInfo> allApps = pm.queryIntentActivities(main, 0);
 
-        // Determine dock apps (first 5 from DOCK_CANDIDATES that are installed)
+        // Determine dock apps: pinned first (WP-12), then DOCK_CANDIDATES
         final Set<String> dockedPkgs = new LinkedHashSet<>();
         int dockIdx = 0;
-        for (String candidate : DOCK_CANDIDATES) {
+        final List<String> dockOrder = new ArrayList<>(loadPinned());
+        for (String c : DOCK_CANDIDATES) dockOrder.add(c);
+        for (String candidate : dockOrder) {
             if (dockIdx >= DOCK_SIZE) break;
             for (ResolveInfo ri : allApps) {
                 if (candidate.equals(ri.activityInfo.packageName)) {
@@ -251,6 +253,17 @@ public class CircleLauncherActivity extends Activity {
                         roundIcon(mDockApps[i].loadIcon(pm), iconPx));
                 final int idx = i;
                 mDockIcons[i].setOnClickListener(v -> launchApp(mDockApps[idx]));
+                mDockIcons[i].setOnLongClickListener(v -> {
+                    ResolveInfo di = mDockApps[idx];
+                    if (di == null) return false;
+                    final String pkg = di.activityInfo.packageName;
+                    new android.app.AlertDialog.Builder(CircleLauncherActivity.this)
+                            .setTitle(di.loadLabel(pm))
+                            .setItems(new CharSequence[]{"Unpin from dock"},
+                                    (d, w) -> unpinFromDock(pkg))
+                            .show();
+                    return true;
+                });
             } else {
                 mDockIcons[i].setVisibility(View.INVISIBLE);
             }
@@ -272,6 +285,50 @@ public class CircleLauncherActivity extends Activity {
         mAppGrid.setFastScrollEnabled(true);          // WP-78: alphabetical jump
         mAppGrid.setOnItemClickListener((parent, view, position, id) ->
                 launchApp((ResolveInfo) parent.getItemAtPosition(position)));
+        mAppGrid.setOnItemLongClickListener((parent, view, position, id) -> {
+            ResolveInfo gi = (ResolveInfo) parent.getItemAtPosition(position);
+            if (gi == null) return false;
+            final String pkg = gi.activityInfo.packageName;
+            new android.app.AlertDialog.Builder(CircleLauncherActivity.this)
+                    .setTitle(gi.loadLabel(getPackageManager()))
+                    .setItems(new CharSequence[]{"Pin to dock"},
+                            (d, w) -> pinToDock(pkg))
+                    .show();
+            return true;
+        });
+    }
+
+    // WP-12: pin apps to the dock, persisted in SharedPreferences.
+    private java.util.List<String> loadPinned() {
+        String s = getSharedPreferences("circle_launcher", MODE_PRIVATE)
+                .getString("pinned_dock", "");
+        java.util.List<String> out = new ArrayList<>();
+        if (!s.isEmpty()) {
+            for (String p : s.split(",")) if (!p.isEmpty()) out.add(p);
+        }
+        return out;
+    }
+
+    private void savePinned(java.util.List<String> pinned) {
+        getSharedPreferences("circle_launcher", MODE_PRIVATE).edit()
+                .putString("pinned_dock", String.join(",", pinned)).apply();
+    }
+
+    private void pinToDock(String pkg) {
+        java.util.List<String> p = loadPinned();
+        p.remove(pkg);
+        p.add(0, pkg);
+        while (p.size() > DOCK_SIZE) p.remove(p.size() - 1);
+        savePinned(p);
+        loadApps();
+    }
+
+    private void unpinFromDock(String pkg) {
+        java.util.List<String> p = loadPinned();
+        if (p.remove(pkg)) {
+            savePinned(p);
+            loadApps();
+        }
     }
 
     private void launchApp(ResolveInfo ri) {
