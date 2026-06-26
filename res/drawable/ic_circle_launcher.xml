@@ -2,7 +2,7 @@
 <!--
   CircleLauncher app icon — Circle brand mark.
   Vector drawable so we don't need a multi-density bitmap set for alpha.
-  Brand colours: Circle Gold (#D4A574) on Circle Deep (#1A1F36).
+  Brand colours: Circle Blue (#2196F3) on Circle Black (#0A0A0A).
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
@@ -11,17 +11,17 @@
     android:viewportHeight="48">
 
     <path
-        android:fillColor="#1A1F36"
+        android:fillColor="#0A0A0A"
         android:pathData="M0,0h48v48h-48z" />
 
     <path
-        android:strokeColor="#D4A574"
+        android:strokeColor="#2196F3"
         android:strokeWidth="3"
         android:fillColor="#00000000"
         android:pathData="M 24 8 A 16 16 0 1 1 23.99 8" />
 
     <path
-        android:fillColor="#D4A574"
+        android:fillColor="#2196F3"
         android:pathData="M 24 18 m -3.5 0 a 3.5 3.5 0 1 0 7 0 a 3.5 3.5 0 1 0 -7 0" />
 
 </vector>
