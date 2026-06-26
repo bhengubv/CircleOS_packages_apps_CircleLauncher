@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Circle's signature privacy soul-tile: flat dark tile with a brand-accent spine. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/circle_tile" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    <item android:width="4dp" android:gravity="start">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/circle_accent" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+</layer-list>

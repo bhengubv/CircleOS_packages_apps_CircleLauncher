@@ -2,14 +2,14 @@
  * Copyright (C) 2026 CircleOS
  * SPDX-License-Identifier: Apache-2.0
  *
- * Circle Launcher — HyperOS-inspired home screen.
+ * Circle Launcher — Circle OS home screen.
  *
- * Design elements from Xiaomi HyperOS:
+ * Design elements from the Circle OS design language:
  *   - 4-column app grid with rounded superellipse icon masks
  *   - Bottom dock with 5 pinned apps (auto-detected from common packages)
- *   - Frosted glass search bar above dock
+ *   - Flat search bar above dock
  *   - Privacy status card at top (Circle's unique element)
- *   - Wallpaper-backed with translucent system bars
+ *   - True-black canvas, flat system bars
  *   - Clean typography, generous spacing
  *
  * Tap search bar → opens Android global search.
@@ -280,13 +280,13 @@ public class CircleLauncherActivity extends Activity {
     }
 
     // ------------------------------------------------------------------
-    //  Rounded superellipse icon mask (HyperOS style)
+    //  Rounded superellipse icon mask (Circle OS style)
     // ------------------------------------------------------------------
 
     /**
      * Applies a rounded superellipse (squircle) clip to the drawable,
-     * matching HyperOS's icon shape. The radius ratio controls how
-     * "square" vs "round" the corners are — 0.28 matches HyperOS closely.
+     * matching Circle OS's icon shape. The radius ratio controls how
+     * "square" vs "round" the corners are — 0.28 matches Circle OS closely.
      */
     private Drawable roundIcon(Drawable original, int sizePx) {
         if (original == null) return null;

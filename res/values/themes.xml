@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-      Circle Launcher theme — HyperOS-inspired.
-      Translucent system bars, wallpaper visible, dark Circle brand palette.
+      Circle Launcher theme - Circle OS identity.
+      True-black canvas, brand-blue (#2196F3) accent, flat surfaces, typography-forward.
+      Square-meets-circle: flat tiles with a subtle radius, circular privacy motif.
     -->
     <style name="Theme.CircleLauncher" parent="@android:style/Theme.DeviceDefault.NoActionBar">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowShowWallpaper">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:navigationBarColor">#001A1F36</item>
-        <item name="android:statusBarColor">#001A1F36</item>
-        <item name="android:colorBackground">#1A1F36</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:windowBackground">@color/circle_bg</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:statusBarColor">@color/circle_bg</item>
+        <item name="android:navigationBarColor">@color/circle_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorBackground">@color/circle_bg</item>
+        <item name="android:colorAccent">@color/circle_accent</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 </resources>

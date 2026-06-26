@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Circle Launcher palette - Circle OS identity (true-black + brand blue). -->
+<resources>
+    <color name="circle_bg">#FF000000</color>
+    <color name="circle_tile">#FF161616</color>
+    <color name="circle_tile_pressed">#FF222222</color>
+    <color name="circle_accent">#FF2196F3</color>
+    <color name="circle_text">#FFFFFFFF</color>
+    <color name="circle_text_dim">#B3FFFFFF</color>
+</resources>
