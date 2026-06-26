@@ -256,7 +256,7 @@ public class CircleLauncherActivity extends Activity {
             }
         }
 
-        // Grid apps = all apps minus self minus docked
+        // Grid apps = all apps minus self minus docked, sorted A->Z by label
         final List<ResolveInfo> gridApps = new ArrayList<>();
         for (ResolveInfo ri : allApps) {
             String pkg = ri.activityInfo.packageName;
@@ -264,8 +264,12 @@ public class CircleLauncherActivity extends Activity {
             if (dockedPkgs.contains(pkg)) continue;
             gridApps.add(ri);
         }
+        final java.util.Map<ResolveInfo, String> labels = new java.util.HashMap<>();
+        for (ResolveInfo ri : gridApps) labels.put(ri, String.valueOf(ri.loadLabel(pm)));
+        gridApps.sort((a, b) -> labels.get(a).compareToIgnoreCase(labels.get(b)));
 
-        mAppGrid.setAdapter(new AppAdapter(gridApps, pm));
+        mAppGrid.setAdapter(new AppAdapter(gridApps, pm, labels));
+        mAppGrid.setFastScrollEnabled(true);          // WP-78: alphabetical jump
         mAppGrid.setOnItemClickListener((parent, view, position, id) ->
                 launchApp((ResolveInfo) parent.getItemAtPosition(position)));
     }
@@ -284,20 +288,58 @@ public class CircleLauncherActivity extends Activity {
     //  Adapter
     // ------------------------------------------------------------------
 
-    private final class AppAdapter extends BaseAdapter {
+    private final class AppAdapter extends BaseAdapter
+            implements android.widget.SectionIndexer {
         private final List<ResolveInfo> mApps;
         private final PackageManager mPm;
         private final int mIconPx;
+        private final java.util.Map<ResolveInfo, String> mLabels;
+        private final String[] mSections;
 
-        AppAdapter(List<ResolveInfo> apps, PackageManager pm) {
-            mApps  = apps;
-            mPm    = pm;
+        AppAdapter(List<ResolveInfo> apps, PackageManager pm,
+                   java.util.Map<ResolveInfo, String> labels) {
+            mApps   = apps;
+            mPm     = pm;
+            mLabels = labels;
             mIconPx = dpToPx(ICON_SIZE_DP);
+            java.util.LinkedHashSet<String> secs = new java.util.LinkedHashSet<>();
+            for (ResolveInfo ri : apps) secs.add(sectionOf(ri));
+            mSections = secs.toArray(new String[0]);
+        }
+
+        private String sectionOf(ResolveInfo ri) {
+            String l = mLabels.get(ri);
+            if (l == null || l.isEmpty()) return "#";
+            char c = Character.toUpperCase(l.charAt(0));
+            return Character.isLetter(c) ? String.valueOf(c) : "#";
         }
 
         @Override public int getCount()              { return mApps.size(); }
         @Override public ResolveInfo getItem(int p)  { return mApps.get(p); }
         @Override public long getItemId(int p)       { return p; }
+
+        @Override public Object[] getSections()      { return mSections; }
+
+        @Override
+        public int getPositionForSection(int section) {
+            if (section < 0) section = 0;
+            if (section >= mSections.length) section = mSections.length - 1;
+            String want = mSections[section];
+            for (int i = 0; i < mApps.size(); i++) {
+                if (want.equals(sectionOf(mApps.get(i)))) return i;
+            }
+            return 0;
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+            if (position < 0 || position >= mApps.size()) return 0;
+            String sec = sectionOf(mApps.get(position));
+            for (int i = 0; i < mSections.length; i++) {
+                if (mSections[i].equals(sec)) return i;
+            }
+            return 0;
+        }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -309,7 +351,7 @@ public class CircleLauncherActivity extends Activity {
             ImageView icon = row.findViewById(R.id.app_icon);
             icon.setImageDrawable(roundIcon(info.loadIcon(mPm), mIconPx));
             ((TextView) row.findViewById(R.id.app_label))
-                    .setText(info.loadLabel(mPm));
+                    .setText(mLabels.get(info));
             return row;
         }
     }
