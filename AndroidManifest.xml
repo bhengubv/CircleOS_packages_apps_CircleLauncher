@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Signature-level. Used once, at first boot, to set this launcher as
+         the default home so no chooser appears - see DefaultHomeClaimer. -->
+    <uses-permission android:name="android.permission.MANAGE_ROLE_HOLDERS" />
+
     <application
         android:label="Circle Launcher"
         android:icon="@drawable/ic_circle_launcher"
@@ -22,6 +26,27 @@
             android:resumeWhilePausing="true"
             android:screenOrientation="unspecified"
             android:exported="true">
+            <!--
+              No android:priority here, and that is deliberate.
+
+              android:priority on a HOME intent-filter does NOT mean "the
+              default that the user can change". It wins intent resolution
+              outright and keeps winning: with priority="100" on this filter,
+              choosing the other launcher in Settings > Default home app
+              updated the role holder and changed nothing, and even an
+              explicit `cmd package set-home-activity` could not override it.
+              Measured on a Pixel 7a, 2026-09-15.
+
+              AOSP has no config for a preset default home either - roles.xml
+              gives defaultHolders to ASSISTANT, BROWSER, DIALER and SMS, but
+              android.app.role.HOME has none. It resolves through
+              HomeRoleBehavior.getFallbackHolderAsUser(), which picks the
+              highest priority and returns null on a tie.
+
+              So priority buys a default that cannot be changed, which is
+              worse than a chooser. Both launchers sit at 0 and the user's
+              choice in Settings is authoritative.
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -29,5 +54,13 @@
             </intent-filter>
         </activity>
 
+
+        <receiver
+            android:name=".DefaultHomeClaimer"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
