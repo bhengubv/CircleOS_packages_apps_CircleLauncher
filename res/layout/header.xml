@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Panorama header - guide 2.7. The Circle wordmark, not a generic title,
+  and beside it the privacy state from guide 2.5: "a tasteful, persistent
+  cue that comms are blind/encrypted - a soul signal WP never had."
+
+  The cue is round because it belongs to the identity layer (2.2), and it
+  reports what is actually configured. It is never green by decoration.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginStart="@dimen/grid_margin"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/wordmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_start"
+        android:textColor="@color/metro_text"
+        android:textSize="@dimen/type_display"
+        android:fontFamily="@font/selawik_light" />
+
+    <View
+        android:id="@+id/privacy_dot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="6dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/presence_dot" />
+
+    <TextView
+        android:id="@+id/privacy_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="4dp"
+        android:layout_gravity="bottom"
+        android:textColor="@color/metro_text_dim"
+        android:textSize="@dimen/type_caption"
+        android:fontFamily="@font/selawik_light" />
+</LinearLayout>

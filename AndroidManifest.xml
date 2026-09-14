@@ -9,9 +9,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <!-- Signature-level. Used once, at first boot, to set this launcher as
-         the default home so no chooser appears - see DefaultHomeClaimer. -->
-    <uses-permission android:name="android.permission.MANAGE_ROLE_HOLDERS" />
 
     <application
         android:label="Circle Launcher"
@@ -55,12 +52,5 @@
         </activity>
 
 
-        <receiver
-            android:name=".DefaultHomeClaimer"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

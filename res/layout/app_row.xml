@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Long list, guide 1.6: content-first, type leads. Body size, regular
+  weight; the glyph is a small square swatch rather than a rounded icon.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/app_row_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <FrameLayout
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="14dp"
+        android:background="@color/metro_tile">
+
+        <ImageView
+            android:id="@+id/row_glyph"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:contentDescription="@null" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/row_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/metro_text"
+        android:textSize="@dimen/type_subhead"
+        android:fontFamily="@font/selawik_light" />
+</LinearLayout>

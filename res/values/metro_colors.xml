@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Metro: black ground, one accent, white type. No gradients, no shadow.
+
+  Guide 2.1: the accent is LOCKED to the brand palette - #2196F3 primary,
+  #2c3e50, #ffffff. Not a user free-for-all, and never orange.
+  Guide 2.6: "dual dark base" - true black AND a signature deep navy. Both
+  are defined here; circle_navy is the soul band's ground so the second base
+  is visible rather than theoretical.
+-->
+<resources>
+    <color name="metro_background">#FF000000</color>
+    <color name="metro_tile">#FF2196F3</color>
+    <color name="metro_tile_alt">#FF1976D2</color>
+    <color name="metro_text">#FFFFFFFF</color>
+    <color name="metro_text_dim">#B3FFFFFF</color>
+    <color name="metro_pressed">#FF0D47A1</color>
+
+    <!-- Guide 2.6, "dual dark base": true-black AND a signature deep navy.
+         This is the BASE - the ground the tiles sit on - not a tile fill.
+         Painting tiles with it produced two design languages on one screen.
+         Switch metro_background to this for the navy base. -->
+    <color name="circle_navy">#FF2C3E50</color>
+
+    <!-- Guide 2.2, the identity layer: avatars, contact tiles, presence,
+         status badges, toggles. Those are round. Nothing else is. -->
+    <color name="identity_fill">#FF1B2733</color>
+
+    <!-- Guide 2.5 - privacy as a visible state. Green only when the claim
+         is actually true; dim when it is not. Never green by decoration. -->
+    <color name="privacy_on">#FF4CAF50</color>
+    <color name="privacy_off">#66FFFFFF</color>
+</resources>

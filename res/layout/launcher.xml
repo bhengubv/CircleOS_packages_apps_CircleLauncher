@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Two surfaces, swiped horizontally: start, and the long list. The guide
+  (1.6) calls for Panorama/Pivot horizontal motion; this is the minimal
+  honest form of it.
+-->
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flipper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        android:paddingTop="44dp"
+        android:paddingBottom="28dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Guide 2.7 wordmark + 2.5 privacy state. -->
+            <include layout="@layout/header" />
+
+            <!-- Guide 2.3: the soul tiles sit above the app tiles,
+                 because what the OS means should outrank what is
+                 merely installed on it. -->
+            <com.circleos.launcher.metro.TileGridLayout
+                android:id="@+id/soul_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/tile_gutter"
+                android:paddingStart="@dimen/grid_margin"
+                android:paddingEnd="@dimen/grid_margin" />
+
+
+            <com.circleos.launcher.metro.TileGridLayout
+                android:id="@+id/tile_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/grid_margin"
+                android:paddingEnd="@dimen/grid_margin" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="44dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_margin"
+            android:layout_marginBottom="10dp"
+            android:text="@string/header_apps"
+            android:textColor="@color/metro_text"
+            android:textSize="@dimen/type_header"
+            android:fontFamily="@font/selawik_light" />
+
+        <ListView
+            android:id="@+id/apps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/grid_margin"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:scrollbars="none"
+            android:listSelector="@android:color/transparent" />
+    </LinearLayout>
+</ViewFlipper>

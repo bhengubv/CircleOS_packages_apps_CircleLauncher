@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tile anatomy, guide 1.2: flat fill, sharp corners, no shadow, no gradient.
+  Glyph white and centred; app name lowercase and small, bottom-left.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/metro_tile"
+    android:padding="@dimen/tile_inset">
+
+    <ImageView
+        android:id="@+id/tile_glyph"
+        android:layout_width="@dimen/glyph_medium"
+        android:layout_height="@dimen/glyph_medium"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/tile_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/metro_text"
+        android:textSize="@dimen/type_caption"
+        android:fontFamily="@font/selawik_regular" />
+</FrameLayout>

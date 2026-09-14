@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Numbers from CircleOS_Skin_Design_Guide.md. The guide calls them "a
+  starting spec - tune in design, not gospel", so they are named here rather
+  than scattered through layouts.
+
+  1.1  small cell 76dp, gutter 8dp, outer margin 12dp
+       -> medium (2x2) = 76*2 + 8   = 160dp
+       -> wide   (4x2) = 76*4 + 8*3 = 328dp
+  1.3  type ramp: Display 48 / Header 28 / Subhead 20 / Body 15 / Caption 12
+-->
+<resources>
+    <dimen name="tile_cell">76dp</dimen>
+    <dimen name="tile_gutter">8dp</dimen>
+    <dimen name="grid_margin">12dp</dimen>
+
+    <dimen name="type_display">48sp</dimen>
+    <dimen name="type_header">28sp</dimen>
+    <dimen name="type_subhead">20sp</dimen>
+    <dimen name="type_body">15sp</dimen>
+    <dimen name="type_caption">12sp</dimen>
+
+    <!-- 1.2 the glyph is the subject of the tile, optically sized against
+         the small cell rather than fixed per tile size. -->
+    <dimen name="glyph_small">34dp</dimen>
+    <dimen name="glyph_medium">56dp</dimen>
+    <dimen name="glyph_wide">56dp</dimen>
+
+    <dimen name="tile_inset">8dp</dimen>
+    <dimen name="app_row_height">52dp</dimen>
+</resources>

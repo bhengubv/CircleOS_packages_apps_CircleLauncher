@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Guide 2.7: the panorama header carries the Circle wordmark, not a
+         generic title. "start" is Microsoft's word and was the single most
+         Windows-Phone thing on the screen. -->
+    <string name="header_start">circle</string>
+    <string name="header_apps">apps</string>
+
+    <!-- Guide 2.3 - soul tiles. The label is the tile's identity; the
+         second line is live state, filled in at bind time. -->
+    <string name="soul_mesh">aethernet</string>
+    <string name="soul_wallet">wallet</string>
+    <string name="soul_assistant">b!</string>
+
+    <!-- State strings. Each says what is actually known. "unavailable"
+         means the component is not on this build - not that it is off. -->
+    <string name="state_unavailable">not installed</string>
+    <string name="state_offline">offline</string>
+    <string name="state_unknown">—</string>
+
+    <!-- Guide 2.5 -->
+    <string name="privacy_encrypted">encrypted</string>
+    <string name="privacy_not_encrypted">not private</string>
+</resources>

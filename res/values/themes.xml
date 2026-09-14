@@ -13,5 +13,8 @@
         <item name="android:statusBarColor">#001A1F36</item>
         <item name="android:colorBackground">#1A1F36</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <!-- Both skins paint on a dark ground, so the status bar
+             icons stay light in either. -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

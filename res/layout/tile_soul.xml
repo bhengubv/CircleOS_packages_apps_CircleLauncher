@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A soul tile is a TILE. Same anatomy as every other one - guide 1.2: flat
+  accent fill, sharp corners, white glyph centred, lowercase name
+  bottom-left. The only thing that makes it a soul tile is that it carries
+  live state (guide 2.3: "the tile content is itself a differentiator").
+  Content is the difference. Not colour, not shape, not glyph treatment.
+
+  An earlier version of this file gave soul tiles a navy fill and wrapped
+  every glyph in a blue ring. That read as a second design language sharing
+  the screen with the first, and it came from misreading two clauses:
+
+    2.6 "dual dark base" is about the BASE - the background and wallpaper -
+        not about painting some tiles a different colour.
+    2.2 "square-meets-circle" reserves the circle for the HUMAN layer:
+        avatars, contact tiles, B! presence, status badges, toggles. A mesh
+        or wallet glyph is none of those.
+
+  So the ring is gone and the presence dot - which IS a status badge, and
+  is therefore legitimately round - shows only when there is presence to
+  report.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tile_bg"
+    android:padding="@dimen/tile_inset">
+
+    <ImageView
+        android:id="@+id/soul_glyph"
+        android:layout_width="@dimen/glyph_medium"
+        android:layout_height="@dimen/glyph_medium"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null" />
+
+    <!-- Guide 1.2: counts and badges go top-right. Round, because presence
+         belongs to the identity layer. Gone unless it is actually live. -->
+    <View
+        android:id="@+id/soul_presence"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_gravity="top|end"
+        android:background="@drawable/presence_dot"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:orientation="vertical">
+
+        <!-- The live line. This is the whole point of a soul tile. -->
+        <TextView
+            android:id="@+id/soul_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/metro_text_dim"
+            android:textSize="@dimen/type_caption"
+            android:fontFamily="@font/selawik_light" />
+
+        <TextView
+            android:id="@+id/soul_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/metro_text"
+            android:textSize="@dimen/type_caption"
+            android:fontFamily="@font/selawik_regular" />
+    </LinearLayout>
+</FrameLayout>

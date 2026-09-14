@@ -20,6 +20,13 @@
 package com.circleos.launcher;
 
 import android.app.Activity;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
+
+import com.circleos.launcher.metro.MetroSurface;
 import android.app.SearchManager;
 import android.circleos.privacy.ICirclePrivacyManagerService;
 import android.content.ComponentName;
@@ -82,9 +89,60 @@ public class CircleLauncherActivity extends Activity {
     private final ImageView[] mDockIcons = new ImageView[DOCK_SIZE];
     private final ResolveInfo[] mDockApps = new ResolveInfo[DOCK_SIZE];
 
+    /**
+     * The skin is a setting, not a separate app.
+     *
+     * CircleOS_Theme_Skins_Scout.md draws the line: "Launcher = a whole
+     * home-screen app. (An earlier pass wandered here - out of scope,
+     * dropped.) Skin = a visual theme layer... Pick a skin -> the system
+     * re-dresses."
+     *
+     * Metro shipped as a second launcher for a while. Two apps answering
+     * HOME meant a chooser on first boot, then android:priority to suppress
+     * it - which made the default unchangeable - then a role claimer to undo
+     * that. One app that can draw itself two ways has none of those problems.
+     *
+     * Stored in Settings.Secure so it survives an app update, is visible to
+     * anyone debugging (`settings get secure circle_skin`), and is writable
+     * by CircleSettings, which holds WRITE_SECURE_SETTINGS.
+     */
+    public static final String SKIN_SETTING = "circle_skin";
+    public static final String SKIN_CIRCLE  = "circle";
+    public static final String SKIN_METRO   = "metro";
+
+    private MetroSurface mMetro;
+    private String mRenderedSkin;
+    private ContentObserver mSkinObserver;
+
+    /**
+     * Metro is the default, and unset means Metro.
+     *
+     * "Circle OS needs to default in Metro UI - not as a skin but as an
+     * identity." Metro carrying the section-2 signatures - the circle
+     * wordmark, soul tiles, the identity layer, the privacy state - IS the
+     * OS's face. The Circle skin is the alternate: the rounded-card
+     * home for anyone who wants it.
+     *
+     * So an unset value resolves to Metro, not to the other one. A device
+     * that has never been configured shows the identity.
+     */
+    private String currentSkin() {
+        String skin = Settings.Secure.getString(getContentResolver(), SKIN_SETTING);
+        return SKIN_CIRCLE.equals(skin) ? SKIN_CIRCLE : SKIN_METRO;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRenderedSkin = currentSkin();
+        watchSkin();
+
+        if (SKIN_METRO.equals(mRenderedSkin)) {
+            mMetro = new MetroSurface(this);
+            setContentView(mMetro.create());
+            return;
+        }
+
         setContentView(R.layout.activity_launcher);
 
         mPrivacyStatusText = findViewById(R.id.privacy_status_text);
@@ -109,6 +167,16 @@ public class CircleLauncherActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!currentSkin().equals(mRenderedSkin)) {
+            recreate();
+            return;
+        }
+
+        if (mMetro != null) {
+            mMetro.refresh();
+            return;
+        }
         refreshPrivacyWidget();
     }
 
@@ -326,5 +394,52 @@ public class CircleLauncherActivity extends Activity {
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * Re-dress when the skin changes. recreate() rather than swapping views
+     * in place: the two skins have different themes, different window flags
+     * and no shared view tree, so rebuilding the activity is both simpler
+     * and more honest than trying to mutate one into the other.
+     */
+    private void watchSkin() {
+        mSkinObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                // Only useful while we are on screen; onResume covers the
+                // rest, and covers it more reliably.
+                if (!currentSkin().equals(mRenderedSkin)) {
+                    recreate();
+                }
+            }
+        };
+        getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(SKIN_SETTING), false, mSkinObserver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mSkinObserver != null) {
+            getContentResolver().unregisterContentObserver(mSkinObserver);
+            mSkinObserver = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Home is the bottom of the stack. The Metro skin uses back to leave
+        // its app list; otherwise back does nothing here.
+        if (mMetro != null && mMetro.onBackPressed()) {
+            return;
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (mMetro != null) {
+            mMetro.onHome();
+        }
     }
 }
