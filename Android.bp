@@ -21,6 +21,16 @@ android_app {
     optimize: {
         enabled: false,
     },
+    // The default home screen. Launcher3QuickStep arrives through
+    // handheld_system_ext.mk, which the product inherits and cannot
+    // subtract from; with two apps answering HOME and no preference
+    // recorded, Android shows a chooser on first boot. Overriding it means
+    // the stock launcher is never installed and there is nothing to choose.
+    overrides: [
+        "Launcher3",
+        "Launcher3QuickStep",
+    ],
+
     static_libs: [
         // Privacy AIDLs for the home-screen widget that surfaces the live
         // Circle privacy score.
