@@ -34,6 +34,21 @@
         android:scaleType="fitCenter"
         android:contentDescription="@null" />
 
+    <!-- No installed package means no icon to ask PackageManager for, and
+         the tile came out a blank accent rectangle. Metro is typography-led
+         (guide 1.1), so the fallback is a letter, not a placeholder image -
+         it is the same answer the design already gives everywhere else.
+         Shown only when soul_glyph has nothing. -->
+    <TextView
+        android:id="@+id/soul_initial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/metro_text"
+        android:textSize="48sp"
+        android:fontFamily="@font/selawik_light"
+        android:visibility="gone" />
+
     <!-- Guide 1.2: counts and badges go top-right. Round, because presence
          belongs to the identity layer. Gone unless it is actually live. -->
     <View

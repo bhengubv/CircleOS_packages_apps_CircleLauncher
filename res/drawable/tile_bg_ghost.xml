@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A tile for something that is not built yet.
+
+  Guide 1.2 lists a "transparent-tile option (glyph on the wallpaper)" as
+  part of Metro's tile anatomy, and it is exactly right for this: an outline
+  on the wallpaper reads as a place held open, where a dimmed accent fill
+  reads as a tile that is broken. The difference matters because these tiles
+  are the roadmap - they say what the OS still owes you.
+
+  Unused as of the change that made pending tiles render identically to live
+  ones: on a true-black ground this reads as a hole in the grid, and the
+  state it advertised is for us, not for whoever is holding the phone. Kept
+  because the treatment is still the right one the day a tile should look
+  deliberately empty.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <stroke android:width="1dp" android:color="@color/metro_tile" />
+</shape>

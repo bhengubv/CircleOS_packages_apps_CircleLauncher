@@ -22,4 +22,10 @@
     <!-- Guide 2.5 -->
     <string name="privacy_encrypted">encrypted</string>
     <string name="privacy_not_encrypted">not private</string>
+
+    <!-- Why a soul tile is not usable yet. Each says the actual reason,
+         because "unavailable" for three different causes is no use to
+         anyone deciding what to build next. -->
+    <string name="state_not_built">not built</string>
+    <string name="state_no_ui">no screen yet</string>
 </resources>

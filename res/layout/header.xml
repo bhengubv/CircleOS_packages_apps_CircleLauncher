@@ -43,4 +43,33 @@
         android:textColor="@color/metro_text_dim"
         android:textSize="@dimen/type_caption"
         android:fontFamily="@font/selawik_light" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <!--
+      Windows Phone put an arrow at the top right of Start to reach the app
+      list, and it is needed here for a reason WP never had: Android's
+      system Back gesture owns both screen edges, so a finger swipe that
+      starts where a finger naturally starts is taken by the system and the
+      pivot never sees it. Measured on a Pixel 7a - an edge swipe stays on
+      Start; the same swipe started mid-screen works.
+
+      setSystemGestureExclusionRects (see MetroSurface) reclaims what the
+      platform allows, but it is capped, so a gesture alone cannot be the
+      only way through. This is the way that always works.
+    -->
+    <TextView
+        android:id="@+id/pivot_arrow"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="@dimen/grid_margin"
+        android:gravity="center"
+        android:text="\u2192"
+        android:textColor="@color/metro_text_dim"
+        android:textSize="@dimen/type_header"
+        android:fontFamily="@font/selawik_light"
+        android:contentDescription="@string/header_apps" />
 </LinearLayout>

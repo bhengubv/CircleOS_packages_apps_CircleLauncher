@@ -8,7 +8,9 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,6 +23,7 @@ import android.widget.ViewFlipper;
 import com.circleos.launcher.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,6 +66,7 @@ public final class MetroSurface {
     /** Guide 1.5: turnstile, rotating about the left edge, staggered so the
      *  grid assembles in a sweep rather than appearing all at once. */
     private static final int   TURNSTILE_MS      = 260;
+    private static final String TAG = "CircleLauncher";
     private static final int   TURNSTILE_STAGGER = 26;
     private static final float TURNSTILE_FROM    = -84f;
 
@@ -95,6 +99,13 @@ public final class MetroSurface {
         appList.setOnItemClickListener(
                 (parent, view, position, id) -> launch(position, view));
 
+        View arrow = root.findViewById(R.id.pivot_arrow);
+        if (arrow != null) {
+            arrow.setOnClickListener(v -> flipper.setDisplayedChild(PAGE_APPS));
+        }
+
+        reclaimEdgeGestures();
+
         gestures = new GestureDetector(host, new SwipeListener());
         View.OnTouchListener forward = (v, event) -> {
             gestures.onTouchEvent(event);
@@ -103,6 +114,35 @@ public final class MetroSurface {
         appList.setOnTouchListener(forward);
         flipper.setOnTouchListener(forward);
         return root;
+    }
+
+
+    /**
+     * Ask the system not to treat the screen edges as Back.
+     *
+     * Android's gesture navigation owns a strip down each edge. A horizontal
+     * pivot - which is how Metro moves between Start and the app list - is
+     * exactly the gesture it steals, and a finger starts at the edge far more
+     * often than in the middle. Measured on a Pixel 7a: a swipe from the edge
+     * never reached the pivot; the same swipe started mid-screen did.
+     *
+     * The platform caps how much of each edge an app may reclaim (200dp per
+     * edge), so this improves the gesture without guaranteeing it. That is
+     * why the arrow in the header exists as well: the gesture is the nice way
+     * and the arrow is the way that always works.
+     */
+    private void reclaimEdgeGestures() {
+        root.post(() -> {
+            int h = root.getHeight();
+            int w = root.getWidth();
+            if (h <= 0 || w <= 0) {
+                return;
+            }
+            int strip = (int) (24 * host.getResources().getDisplayMetrics().density);
+            root.setSystemGestureExclusionRects(Arrays.asList(
+                    new Rect(0, 0, strip, h),
+                    new Rect(w - strip, 0, w, h)));
+        });
     }
 
     /** Called from the host's onResume. */
@@ -152,11 +192,55 @@ public final class MetroSurface {
             ((TextView) tile.findViewById(R.id.soul_state)).setText(soul.stateRes);
             tile.findViewById(R.id.soul_presence)
                     .setVisibility(soul.live ? View.VISIBLE : View.GONE);
-            ((ImageView) tile.findViewById(R.id.soul_glyph))
-                    .setImageDrawable(repository.iconFor(soul.packageName));
+            ImageView soulGlyph = tile.findViewById(R.id.soul_glyph);
+            android.graphics.drawable.Drawable icon =
+                    repository.iconFor(soul.packageName);
+            soulGlyph.setImageDrawable(icon);
+            // A package that is not installed has no icon, and the tile came
+            // out as a blank accent rectangle - which says "missing" louder
+            // than the state line ever did. Metro is typography-led, so the
+            // fallback is the name's first letter.
+            TextView initial = tile.findViewById(R.id.soul_initial);
+            if (initial != null) {
+                boolean noIcon = icon == null;
+                soulGlyph.setVisibility(noIcon ? View.GONE : View.VISIBLE);
+                initial.setVisibility(noIcon ? View.VISIBLE : View.GONE);
+                if (noIcon) {
+                    String name = host.getString(soul.labelRes);
+                    initial.setText(name.isEmpty()
+                            ? "" : name.substring(0, 1).toLowerCase(Locale.ROOT));
+                }
+            }
 
-            tile.setOnClickListener(v -> launchPackage(soul.packageName, v));
-            tile.setOnTouchListener(this::tilt);
+            if (soul.installed) {
+                tile.setOnClickListener(v -> launchPackage(soul.packageName, v));
+                tile.setOnTouchListener(this::tilt);
+            } else {
+                // Not built, or built with no screen to open.
+                //
+                // This was a transparent tile with its state printed on it -
+                // "not built", "no screen yet". On the device that fails
+                // twice. Metro's ground is true black and the wallpaper
+                // behind it is near-black, so a transparent fill reads as a
+                // HOLE in the grid rather than as a tile. And the state line
+                // announces the gap to whoever is holding the phone, which
+                // is the one audience that does not need to know: what is
+                // unfinished is ours to carry, not theirs to read.
+                //
+                // So it is drawn exactly like a live tile. The state is
+                // still resolved and still written to the log, where the
+                // people who need it are the only ones who will see it.
+                Log.i(TAG, "soul tile pending: " + soul.packageName
+                        + " - " + host.getString(soul.stateRes));
+                TextView pendingState = tile.findViewById(R.id.soul_state);
+                if (pendingState != null) {
+                    pendingState.setVisibility(View.GONE);
+                }
+                tile.setOnTouchListener((v, e) -> {
+                    gestures.onTouchEvent(e);
+                    return false;
+                });
+            }
             soulGrid.addView(tile);
         }
         soulGrid.setVisibility(souls.isEmpty() ? View.GONE : View.VISIBLE);

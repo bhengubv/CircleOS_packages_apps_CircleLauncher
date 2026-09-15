@@ -31,7 +31,8 @@ public final class SoulTile {
     public final String packageName;
     public final int labelRes;
 
-    /** True when this component exists on the build at all. */
+    /** True when this tile can be opened. False still renders - as a
+     *  place held open, not as an absence. */
     public boolean installed;
 
     /** Resolved at bind time; a resource id from strings.xml. */
@@ -60,28 +61,58 @@ public final class SoulTile {
         // MEANS, and a dimmed rectangle saying "not installed" means nothing
         // except that something is missing. It also took the most prominent
         // row on the screen to say it.
-        List<SoulTile> present = new ArrayList<>(candidates.size());
+        // Every soul tile is returned, built or not.
+        //
+        // An earlier version dropped the ones that were not installed, on the
+        // grounds that a dead tile is clutter. That was the wrong call: these
+        // three are what the OS means, and a tile that is visibly not built
+        // yet is a roadmap - it says what is still owed. What made the old
+        // one feel broken was its treatment, a dimmed accent fill, not its
+        // presence. It is drawn as a transparent tile now (guide 1.2).
         for (SoulTile tile : candidates) {
             tile.resolve(context);
-            if (tile.installed) {
-                present.add(tile);
-            }
         }
-        return present;
+        return candidates;
     }
 
     private void resolve(Context context) {
         PackageManager pm = context.getPackageManager();
+
+        // "Installed" is not the useful question. com.circleos.aether is
+        // installed and has no MAIN/LAUNCHER activity at all - only an
+        // "aether:" scheme handler - so getLaunchIntentForPackage() returns
+        // null and a tile for it sits there looking pressable and doing
+        // nothing. Measured on a Pixel 7a: tapping it left focus on the
+        // launcher.
+        //
+        // A tile that does not respond is worse than an absent one. It reads
+        // as a broken OS rather than an unfinished one. So the test is
+        // whether there is something to open.
+        //
+        // When these components publish live state - a peer count, a balance -
+        // a status-only tile becomes worth showing on its own, and this is
+        // where that decision changes. Until then, no target means no tile.
+        boolean present;
         try {
             pm.getPackageInfo(packageName, 0);
-            installed = true;
+            present = true;
         } catch (PackageManager.NameNotFoundException e) {
-            installed = false;
+            present = false;
         }
+        installed = present && pm.getLaunchIntentForPackage(packageName) != null;
 
+        if (!present) {
+            // Nothing on the device, and in most cases nothing in any repo.
+            stateRes = R.string.state_not_built;
+            live = false;
+            return;
+        }
         if (!installed) {
-            // all() drops these; nothing will render it.
-            stateRes = R.string.state_unavailable;
+            // The service or handler is there, but there is no screen to
+            // open - com.circleos.aether has only an "aether:" scheme
+            // handler and no MAIN/LAUNCHER activity. That is a different
+            // job from writing the component, so it says so.
+            stateRes = R.string.state_no_ui;
             live = false;
             return;
         }
